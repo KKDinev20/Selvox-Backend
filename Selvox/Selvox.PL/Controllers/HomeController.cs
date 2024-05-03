@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Selvox.PL.Models;
 using System.Diagnostics;
 
 namespace Selvox.PL.Controllers
@@ -18,15 +17,9 @@ namespace Selvox.PL.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        /*public IActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }*/
     }
 }
