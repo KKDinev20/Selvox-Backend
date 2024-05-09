@@ -1,25 +1,107 @@
-html {
-  background-color: snow;
-}
-
-/*
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-*/
-
-/*
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+* {
+  box-sizing: border-box;
+  font-family: "Roboto Medium", sans-serif;
 }
 
 body {
-  margin-bottom: 60px;
+  color: #3A445D;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #F8F8FF;
+  width: 100vw;
+}
+
+main {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.header-container {
+  /*
+  background: #B388FF;
+  */
+  height: 12.5vh;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  /*gap: 12px;*/
+}
+
+/*.left{
+  width:33.33vw;
+}
+
+.center{
+  background:gold;
+  width:33.33vw;
 }*/
+
+.right{
+  height: 7vh;
+  width:12vw;
+  border: 3px solid #fda1ba;
+  border-radius: 15px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.important_word {
+  color: #d2a5ba; 
+  text-decoration: underline
+}
+
+img {
+  width: 80vh;
+  height: 80vh;
+}
+
+.article-container {
+  flex: 1;
+  background: rgba(236, 246, 203, 0.37);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(236, 246, 203, 0.3);
+  border-radius: 30px;
+  align-items: center;
+  display: flex;
+  margin: 15px;
+}
+
+.column {
+  flex: 33.33%;
+  height: 50vh;
+}
+
+.aside-container {
+  background: rgba(250, 206, 216, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 1px solid rgba(250, 206, 216, 0.15);
+  flex: 1.5;
+  margin: 15px;
+  border-radius: 30px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+header,
+article,
+nav,
+aside {
+  padding: 1em;
+}
+
+@media only screen and (min-width: 768px) {
+  main {
+    flex-direction: row;
+  }
+  .inner-wrapper{
+    width: auto;
+  }
+}
