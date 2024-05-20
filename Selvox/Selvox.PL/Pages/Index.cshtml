@@ -4,26 +4,41 @@
     ViewData["Title"] = "Home page";
 }
 
-<body>
-<header class="header-container">
-    @*<div class="left">
-        SELVOX
+
+<nav class="navbar is-primary">
+    <div class="navbar-brand">
+        <a id="header-logo" class="navbar-item" asp-page="/Index"></a>    
     </div>
-    <div class="center">
-        Center
-    </div>*@
-    <div class="right">Get started</div>
-</header>
-<main>
-    <article class="article-container">
-        <div class="column">
-            <h1> Find Your Dream Job</h1> 
-            <h1 class="important_word"> Today </h1><br>
-            <p> Discover exciting career opportunities and take the next step towards success with Selvox.</p>
+    
+    
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <a class="button signup">
+                    <strong>Sign up</strong>
+                </a>
+            </div>
         </div>
-    </article>
-    <aside class="aside-container">
-        <img src="assets/herophoto.png" alt="Image"/>
-    </aside>
-</main>
-</body>
+    </div>
+</nav>
+
+<div class="columns">
+    <div class="column is-narrow">
+        <div class="box nar-column" style="width: 750px">
+            <div class="block">
+                <h1 class="heading-title is-uppercase">Connecting jobseekers with their dream opportunities</h1>
+                <h3 class="heading-subtitle">Selvox simplifies the job search process by providing a seamless platform where employers and jobseekers can connect, collaborate, and achieve their career goals efficiently.</h3>
+                <a class="button getstarted">
+                    <strong>Sign up</strong>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box wide-column">
+            <div class="banner-img-part">
+                <img src="assets/herophoto.png"/>
+            </div>
+        </div>
+    </div>
+</div>
