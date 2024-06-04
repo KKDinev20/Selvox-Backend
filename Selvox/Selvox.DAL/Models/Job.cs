@@ -9,24 +9,24 @@ namespace Selvox.DAL.Models;
 public partial class Job
 {
     [Key]
-    public int Id { get; set; }
+    public int JobId { get; set; }
 
     [StringLength(100)]
-    [Unicode(false)]
-    public string Title { get; set; } = null!;
+    public string JobTitle { get; set; } = null!;
 
-    [Column(TypeName = "text")]
+    [StringLength(100)]
+    public string? Industry { get; set; }
+
     public string? Description { get; set; }
 
-    public int? EmployerID { get; set; }
+    public string? RequiredSkills { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? CreatedAt { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? UpdatedAt { get; set; }
 
     [InverseProperty("Job")]
-    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
-
-    [ForeignKey("EmployerID")]
-    [InverseProperty("Jobs")]
-    public virtual User? Employer { get; set; }
-
-    [InverseProperty("Job")]
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public virtual ICollection<JobMatch> JobMatches { get; } = new List<JobMatch>();
 }

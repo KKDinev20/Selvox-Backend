@@ -6,35 +6,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Selvox.DAL.Models;
 
-[Index("Username", Name = "UQ__Users__536C85E45C2F5C43", IsUnique = true)]
-[Index("Email", Name = "UQ__Users__A9D105342742A62E", IsUnique = true)]
 public partial class User
 {
     [Key]
-    public int Id { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Username { get; set; } = null!;
+    public int UserId { get; set; }
 
     [StringLength(100)]
-    [Unicode(false)]
+    public string UserName { get; set; } = null!;
+
+    [StringLength(100)]
     public string Email { get; set; } = null!;
 
-    [StringLength(100)]
-    [Unicode(false)]
-    public string Password { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
-    [StringLength(20)]
-    [Unicode(false)]
-    public string UserType { get; set; } = null!;
+    [Column(TypeName = "datetime")]
+    public DateTime? CreatedAt { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? UpdatedAt { get; set; }
 
     [InverseProperty("User")]
-    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
+    public virtual ICollection<JobMatch> JobMatches { get; } = new List<JobMatch>();
 
-    [InverseProperty("Employer")]
-    public virtual ICollection<Job> Jobs { get; set; } = new List<Job>();
+    [InverseProperty("User")]
+    public virtual Role? Role { get; set; }
 
-    [InverseProperty("Reviewer")]
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+    [InverseProperty("User")]
+    public virtual ICollection<TestResult> TestResults { get; } = new List<TestResult>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<UserProfile> UserProfiles { get; } = new List<UserProfile>();
 }

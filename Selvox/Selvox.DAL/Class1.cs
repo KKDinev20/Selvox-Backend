@@ -1,7 +1,5 @@
-﻿namespace Selvox.DAL
-{
-    public class Class1
-    {
+﻿namespace Selvox.DAL;
 
-    }
+public class Class1
+{
 }
