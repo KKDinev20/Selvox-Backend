@@ -1,5 +1,5 @@
 <h1 style="text-align: center;">Selvox - Follow your senses</h1>
-<img src = "https://www.figma.com/design/4zSEb7tN3YejBXy395VPyl/SelvoxBanner?node-id=0-1&t=ia8jDC4JFRR7nbhO-0">
+<img src = "Documents\SelvoxBanner.png">
 
 ## Table of Contents
 - ### Project Information
