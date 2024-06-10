@@ -1,14 +1,47 @@
-﻿namespace Selvox.DAL.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-public class User
+namespace Selvox.DAL.Models;
+
+[Index("Username", Name = "UQ__Users__536C85E49F61FBB1", IsUnique = true)]
+[Index("Email", Name = "UQ__Users__A9D10534AB2A0C17", IsUnique = true)]
+public partial class User
 {
-    public int Id { get; set; }
-    
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public DateTime DateOfBirth { get; set; }
+    [Key]
+    public int UserID { get; set; }
 
-    public List<Skill> Skills = new List<Skill>();
-    public List<Interest> Interests = new List<Interest>();
-    public List<CareerRecommendation> CareerRecommendations = new List<CareerRecommendation>();
+    [StringLength(50)]
+    public string Username { get; set; } = null!;
+
+    [StringLength(100)]
+    public string Email { get; set; } = null!;
+
+    public string PasswordHash { get; set; } = null!;
+
+    [StringLength(50)]
+    public string? Role { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? CreatedAt { get; set; }
+
+    [InverseProperty("User")]
+    public virtual ICollection<Assessment> Assessments { get; } = new List<Assessment>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<Feedback> Feedbacks { get; } = new List<Feedback>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<Interview> Interviews { get; } = new List<Interview>();
+
+    [InverseProperty("PostedByUser")]
+    public virtual ICollection<Job> Jobs { get; } = new List<Job>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<Notification> Notifications { get; } = new List<Notification>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<UserJob> UserJobs { get; } = new List<UserJob>();
 }

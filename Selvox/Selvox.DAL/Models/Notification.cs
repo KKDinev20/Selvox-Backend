@@ -6,26 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Selvox.DAL.Models;
 
-public partial class Assessment
+public partial class Notification
 {
     [Key]
-    public int AssessmentID { get; set; }
+    public int NotificationID { get; set; }
 
     public int? UserID { get; set; }
 
-    public string? PersonalityTraits { get; set; }
+    public string? Message { get; set; }
 
-    public string? Skills { get; set; }
-
-    public string? Interests { get; set; }
+    public bool? ReadStatus { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? CreatedAt { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime? SentAt { get; set; }
 
     [ForeignKey("UserID")]
-    [InverseProperty("Assessments")]
+    [InverseProperty("Notifications")]
     public virtual User? User { get; set; }
 }
