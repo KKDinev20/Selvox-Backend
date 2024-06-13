@@ -41,5 +41,37 @@ public class AssessmentController : ControllerBase
         return Ok(assessment);
     }
     
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetAssessmentByUserId(int userId)
+    {
+        var assessment = await _assessmentService.GetAssessmentByUserId(userId);
+        return Ok(assessment);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAssessment(int id, [FromBody] AssessmentUpdateDto assessmentUpdateDto)
+    {
+        try
+        {
+            var assessment = _assessmentService.UpdateAssessment
+            (
+                id,
+                assessmentUpdateDto.PersonalityTraits,
+                assessmentUpdateDto.Skills,
+                assessmentUpdateDto.Interests
+            );
+            return Ok(assessment);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+
+    /*[HttpGet("{id}/analysis")]
+    public async Task<IActionResult> AnalyzeAssessment(int id)
+    {
+        
+    }*/
 }
 
