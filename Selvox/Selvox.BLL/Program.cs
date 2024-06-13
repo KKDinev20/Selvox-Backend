@@ -25,6 +25,8 @@ public class Program
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<IAssessmentRepository, AssessmentRepository>();
+        builder.Services.AddScoped<AssessmentService>();
         builder.Services.AddMemoryCache();
         
         builder.Services.AddEndpointsApiExplorer();
