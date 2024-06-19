@@ -1,8 +1,5 @@
-﻿using System.Security.Authentication;
-using System.Security.Cryptography;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Selvox.BLL.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Selvox.BLL.Interfaces;
 using Selvox.DAL.Context;
 using Selvox.DAL.Models;
 
@@ -17,54 +14,38 @@ public class UserRepository : IUserRepository
         _selvoxDbContext = selvoxDbContext;
     }
 
-    public async Task<User> Register(string username, string email, string password, string role)
+    public async Task<User> GetUserByIdAsync(int id)
     {
-        if (await _selvoxDbContext.Users.AnyAsync(u => u.Username == username || u.Email == email))
-        {
-            throw new Exception("User already exists.");
-        }
+        return await _selvoxDbContext.Users.FindAsync(id);
+    }
 
-        var user = new User
-        {
-            Username = username,
-            Email = email,
-            PasswordHash = HashPassword(password),
-            Role = role,
-            CreatedAt = DateTime.UtcNow
-        };
+    public async Task<IEnumerable<User>> GetAllUsersAsync()
+    {
+        return await _selvoxDbContext.Users.ToListAsync();
+    }
 
-        _selvoxDbContext.Users.Add(user);
+    public async Task<User> AddUserAsync(User user)
+    {
+        _selvoxDbContext.Users.AddAsync(user);
         await _selvoxDbContext.SaveChangesAsync();
         return user;
     }
 
-    public async Task<User> Authenticate(string username, string password)
+    public async Task<User> UpdateUserAsync(User user)
     {
-        var user = await _selvoxDbContext.Users.SingleOrDefaultAsync(u => u.Username == username);
-
-        if (user == null || VerifyPassword(password, user.PasswordHash))
-        {
-            throw new InvalidCredentialException("Invalid Login attempt.");
-        }
-
+        _selvoxDbContext.Entry(user).State = EntityState.Modified;
+        await _selvoxDbContext.SaveChangesAsync();
         return user;
     }
 
-    
-    private string HashPassword(string password)
+    public async Task<bool> DeleteUserAsync(int id)
     {
-        using SHA256 sha256 = SHA256.Create();
+        var user = await _selvoxDbContext.Users.FindAsync(id);
+        if (user == null)
+            return false;
 
-        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-
-        return Convert.ToBase64String(hashedBytes);
-    }
-
- 
-    private bool VerifyPassword(string password, string userPasswordHash)
-    {
-        var hasOutput = HashPassword(password);
-
-        return hasOutput == userPasswordHash;
+        _selvoxDbContext.Users.Remove(user);
+        await _selvoxDbContext.SaveChangesAsync();
+        return true;
     }
 }

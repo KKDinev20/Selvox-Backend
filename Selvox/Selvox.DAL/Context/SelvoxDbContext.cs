@@ -16,23 +16,25 @@ public partial class SelvoxDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Assessment> Assessments { get; set; }
+    public virtual DbSet<Application> Applications { get; set; }
+
+    public virtual DbSet<CareerRecommendation> CareerRecommendations { get; set; }
 
     public virtual DbSet<Employer> Employers { get; set; }
 
-    public virtual DbSet<EmployerJob> EmployerJobs { get; set; }
+    public virtual DbSet<Industry> Industries { get; set; }
 
-    public virtual DbSet<Feedback> Feedbacks { get; set; }
+    public virtual DbSet<JobListing> JobListings { get; set; }
 
-    public virtual DbSet<Interview> Interviews { get; set; }
+    public virtual DbSet<JobRole> JobRoles { get; set; }
 
-    public virtual DbSet<Job> Jobs { get; set; }
+    public virtual DbSet<PersonalityAssessment> PersonalityAssessments { get; set; }
 
-    public virtual DbSet<Notification> Notifications { get; set; }
+    public virtual DbSet<Skill> Skills { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<UserJob> UserJobs { get; set; }
+    public virtual DbSet<UserSkill> UserSkills { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -40,101 +42,99 @@ public partial class SelvoxDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Assessment>(entity =>
+        modelBuilder.Entity<Application>(entity =>
         {
-            entity.HasKey(e => e.AssessmentID).HasName("PK__Assessme__3D2BF83EDD395C13");
+            entity.HasKey(e => e.ApplicationId).HasName("PK__Applicat__C93A4C99156A28E6");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Assessments).HasConstraintName("FK__Assessmen__UserI__4F7CD00D");
+            entity.HasOne(d => d.JobListing).WithMany(p => p.Applications).HasConstraintName("FK__Applicati__JobLi__74AE54BC");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Applications).HasConstraintName("FK__Applicati__UserI__75A278F5");
+        });
+
+        modelBuilder.Entity<CareerRecommendation>(entity =>
+        {
+            entity.HasKey(e => e.RecommendationId).HasName("PK__CareerRe__AA15BEE4FD34D332");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+
+            entity.HasOne(d => d.JobRole).WithMany(p => p.CareerRecommendations).HasConstraintName("FK__CareerRec__JobRo__5AEE82B9");
+
+            entity.HasOne(d => d.User).WithMany(p => p.CareerRecommendations).HasConstraintName("FK__CareerRec__UserI__59FA5E80");
         });
 
         modelBuilder.Entity<Employer>(entity =>
         {
-            entity.HasKey(e => e.EmployerID).HasName("PK__Employer__CA4452416FE5BAB2");
+            entity.HasKey(e => e.EmployerId).HasName("PK__Employer__CA44526164042D7C");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+
+            entity.HasOne(d => d.Industry).WithMany(p => p.Employers).HasConstraintName("FK__Employers__Indus__6A30C649");
         });
 
-        modelBuilder.Entity<EmployerJob>(entity =>
+        modelBuilder.Entity<Industry>(entity =>
         {
-            entity.HasKey(e => new { e.EmployerID, e.JobID }).HasName("PK__Employer__FA123B4F2F580BEF");
-
-            entity.Property(e => e.PostedAt).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.Employer).WithMany(p => p.EmployerJobs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EmployerJ__Emplo__619B8048");
-
-            entity.HasOne(d => d.Job).WithMany(p => p.EmployerJobs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EmployerJ__JobID__628FA481");
+            entity.HasKey(e => e.IndustryId).HasName("PK__Industri__808DEDCCA4CD957D");
         });
 
-        modelBuilder.Entity<Feedback>(entity =>
+        modelBuilder.Entity<JobListing>(entity =>
         {
-            entity.HasKey(e => e.FeedbackID).HasName("PK__Feedback__6A4BEDF69F79EECD");
+            entity.HasKey(e => e.JobListingId).HasName("PK__JobListi__70B705E0FDA186BF");
 
-            entity.Property(e => e.GivenAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
 
-            entity.HasOne(d => d.Interview).WithMany(p => p.Feedbacks).HasConstraintName("FK__Feedback__Interv__6E01572D");
+            entity.HasOne(d => d.Employer).WithMany(p => p.JobListings).HasConstraintName("FK__JobListin__Emplo__6EF57B66");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Feedbacks).HasConstraintName("FK__Feedback__UserID__6D0D32F4");
+            entity.HasOne(d => d.JobRole).WithMany(p => p.JobListings).HasConstraintName("FK__JobListin__JobRo__6FE99F9F");
         });
 
-        modelBuilder.Entity<Interview>(entity =>
+        modelBuilder.Entity<JobRole>(entity =>
         {
-            entity.HasKey(e => e.InterviewID).HasName("PK__Intervie__C97C58328AE4F436");
+            entity.HasKey(e => e.JobRoleId).HasName("PK__JobRoles__6D8BAC2FBB2A94CD");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.Employer).WithMany(p => p.Interviews).HasConstraintName("FK__Interview__Emplo__68487DD7");
-
-            entity.HasOne(d => d.Job).WithMany(p => p.Interviews).HasConstraintName("FK__Interview__JobID__6754599E");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Interviews).HasConstraintName("FK__Interview__UserI__66603565");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
         });
 
-        modelBuilder.Entity<Job>(entity =>
+        modelBuilder.Entity<PersonalityAssessment>(entity =>
         {
-            entity.HasKey(e => e.JobID).HasName("PK__Jobs__056690E23E164422");
+            entity.HasKey(e => e.AssessmentId).HasName("PK__Personal__3D2BF81E1EA2F518");
 
-            entity.Property(e => e.PostedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
 
-            entity.HasOne(d => d.PostedByUser).WithMany(p => p.Jobs).HasConstraintName("FK__Jobs__PostedByUs__5441852A");
+            entity.HasOne(d => d.User).WithMany(p => p.PersonalityAssessments).HasConstraintName("FK__Personali__UserI__4F7CD00D");
         });
 
-        modelBuilder.Entity<Notification>(entity =>
+        modelBuilder.Entity<Skill>(entity =>
         {
-            entity.HasKey(e => e.NotificationID).HasName("PK__Notifica__20CF2E32F2F60978");
-
-            entity.Property(e => e.ReadStatus).HasDefaultValueSql("((0))");
-            entity.Property(e => e.SentAt).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Notifications).HasConstraintName("FK__Notificat__UserI__72C60C4A");
+            entity.HasKey(e => e.SkillId).HasName("PK__Skills__DFA09187EDFFCABB");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserID).HasName("PK__Users__1788CCAC6DC70BC8");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4CE72D638B");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.Gender).IsFixedLength();
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
         });
 
-        modelBuilder.Entity<UserJob>(entity =>
+        modelBuilder.Entity<UserSkill>(entity =>
         {
-            entity.HasKey(e => new { e.UserID, e.JobID }).HasName("PK__UserJobs__27DEA5A2C8F78AB2");
+            entity.HasKey(e => e.UserSkillId).HasName("PK__UserSkil__2F28BE569EC8242B");
 
-            entity.Property(e => e.AppliedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
 
-            entity.HasOne(d => d.Job).WithMany(p => p.UserJobs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UserJobs__JobID__59063A47");
+            entity.HasOne(d => d.Skill).WithMany(p => p.UserSkills).HasConstraintName("FK__UserSkill__Skill__6383C8BA");
 
-            entity.HasOne(d => d.User).WithMany(p => p.UserJobs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UserJobs__UserID__5812160E");
+            entity.HasOne(d => d.User).WithMany(p => p.UserSkills).HasConstraintName("FK__UserSkill__UserI__628FA481");
         });
 
         OnModelCreatingPartial(modelBuilder);

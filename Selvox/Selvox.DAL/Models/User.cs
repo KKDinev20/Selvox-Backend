@@ -6,42 +6,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Selvox.DAL.Models;
 
-[Index("Username", Name = "UQ__Users__536C85E49F61FBB1", IsUnique = true)]
-[Index("Email", Name = "UQ__Users__A9D10534AB2A0C17", IsUnique = true)]
+[Index("Email", Name = "UQ__Users__A9D1053445F43A0E", IsUnique = true)]
 public partial class User
 {
     [Key]
-    public int UserID { get; set; }
+    public int UserId { get; set; }
 
     [StringLength(50)]
-    public string Username { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
 
-    [StringLength(100)]
+    [StringLength(50)]
+    public string LastName { get; set; } = null!;
+
+    [StringLength(255)]
     public string Email { get; set; } = null!;
 
     public string PasswordHash { get; set; } = null!;
 
-    [StringLength(50)]
-    public string? Role { get; set; }
+    [StringLength(20)]
+    public string Role { get; set; } = null!;
 
-    [Column(TypeName = "datetime")]
-    public DateTime? CreatedAt { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime DateOfBirth { get; set; }
 
-    [InverseProperty("User")]
-    public virtual ICollection<Assessment> Assessments { get; } = new List<Assessment>();
+    [StringLength(1)]
+    [Unicode(false)]
+    public string? Gender { get; set; }
 
-    [InverseProperty("User")]
-    public virtual ICollection<Feedback> Feedbacks { get; } = new List<Feedback>();
+    public DateTimeOffset? CreatedAt { get; set; }
 
-    [InverseProperty("User")]
-    public virtual ICollection<Interview> Interviews { get; } = new List<Interview>();
-
-    [InverseProperty("PostedByUser")]
-    public virtual ICollection<Job> Jobs { get; } = new List<Job>();
+    public DateTimeOffset? UpdatedAt { get; set; }
 
     [InverseProperty("User")]
-    public virtual ICollection<Notification> Notifications { get; } = new List<Notification>();
+    public virtual ICollection<Application> Applications { get; } = new List<Application>();
 
     [InverseProperty("User")]
-    public virtual ICollection<UserJob> UserJobs { get; } = new List<UserJob>();
+    public virtual ICollection<CareerRecommendation> CareerRecommendations { get; } = new List<CareerRecommendation>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<PersonalityAssessment> PersonalityAssessments { get; } = new List<PersonalityAssessment>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<UserSkill> UserSkills { get; } = new List<UserSkill>();
 }

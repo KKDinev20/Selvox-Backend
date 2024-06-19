@@ -1,78 +1,61 @@
-﻿using System.Security.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Selvox.BLL.Data_Objects;
-using Selvox.BLL.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using Selvox.BLL.Interfaces;
 using Selvox.DAL.Models;
 
-namespace Selvox.API.Controllers
+namespace Selvox.BLL.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class UserController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
     {
-        private readonly UserService _userService;
+        _userService = userService;
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+    {
+        var users = await _userService.GetAllUsersAsync();
+        if (users.Any()) return Ok(users);
+        return NotFound();
+    }
 
-        public UsersController(UserService userService)
-        {
-            _userService = userService;
-        }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<User>> GetUserById(int id)
+    {
+        var user = await _userService.GetUserByIdAsync(id);
+        if (user == null)
+            return NotFound();
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
-        {
-            try
-            {
-                var user = await _userService.Register(userRegisterDto.Username, userRegisterDto.Email,userRegisterDto.Role,
-                    userRegisterDto.Password);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        return Ok(user);
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<User>> AddUser([FromBody] User user)
+    {
+        var newUser = await _userService.AddUserAsync(user);
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
-        {
-            try
-            {
-                var sessionId = await _userService.Login(userLoginDto.Username, userLoginDto.Password);
-                return Ok(new { SessionId = sessionId });
-                
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(new { message = "Invalid username or password" });
-            }
-        }
-        
-        [HttpPost("logout")]
-        public IActionResult Logout([FromHeader] string sessionId)
-        {
-            _userService.Logout(sessionId);
-            return Ok(new { message = "Logged out successfully" });
-        }
+        return CreatedAtAction(nameof(GetUserById), new { id = newUser.UserId }, newUser);
+    }
 
-        [HttpGet("me")]
-        public IActionResult GetUser([FromHeader] string sessionId)
-        {
-            var user = _userService.GetUserBySessionId(sessionId);
-            if (user == null)
-            {
-                return Unauthorized(new { message = "Invalid session" });
-            }
-            return Ok(user);
-        }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, User user)
+    {
+        if (id != user.UserId)
+            return BadRequest();
+        var updatedUser = await _userService.UpdateUserAsync(user);
+        return NoContent();
+    }
 
-        [HttpGet("checkRole")]
-        public IActionResult CheckRole([FromHeader] string sessionId, [FromQuery] string role)
-        {
-            if (_userService.HasRole(sessionId, role))
-            {
-                return Ok(new { message = $"User has role: {role}" });
-            }
-            return Forbid($"User does not have role: {role}" );
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var deletedUser = await _userService.DeleteUserAsync(id);
+        if (!deletedUser)
+            return NotFound();
+        return NoContent();
     }
 }

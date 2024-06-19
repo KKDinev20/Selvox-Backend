@@ -6,45 +6,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Selvox.DAL.Models;
 
-[Index("ContactEmail", Name = "UQ__Employer__FFA796CD3327029E", IsUnique = true)]
 public partial class Employer
 {
     [Key]
-    public int EmployerID { get; set; }
+    public int EmployerId { get; set; }
 
-    [StringLength(255)]
+    [StringLength(100)]
     public string CompanyName { get; set; } = null!;
 
+    public int? IndustryId { get; set; }
+
+    public string? CompanyDescription { get; set; }
+
     [StringLength(255)]
-    public string? Address { get; set; }
-
-    [StringLength(100)]
-    public string? City { get; set; }
-
-    [StringLength(100)]
-    public string? State { get; set; }
-
-    [StringLength(100)]
-    public string? Country { get; set; }
-
-    [StringLength(20)]
-    public string? PostalCode { get; set; }
-
-    [StringLength(100)]
-    public string? ContactEmail { get; set; }
-
-    [StringLength(20)]
-    public string? ContactPhone { get; set; }
-
-    [StringLength(200)]
     public string? Website { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime? CreatedAt { get; set; }
+    [StringLength(255)]
+    public string? ContactEmail { get; set; }
+
+    [StringLength(15)]
+    public string? ContactPhone { get; set; }
+
+    public DateTimeOffset? CreatedAt { get; set; }
+
+    public DateTimeOffset? UpdatedAt { get; set; }
+
+    [ForeignKey("IndustryId")]
+    [InverseProperty("Employers")]
+    public virtual Industry? Industry { get; set; }
 
     [InverseProperty("Employer")]
-    public virtual ICollection<EmployerJob> EmployerJobs { get; } = new List<EmployerJob>();
-
-    [InverseProperty("Employer")]
-    public virtual ICollection<Interview> Interviews { get; } = new List<Interview>();
+    public virtual ICollection<JobListing> JobListings { get; } = new List<JobListing>();
 }
