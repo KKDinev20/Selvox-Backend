@@ -38,6 +38,11 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public async Task<User> GetUsersByEmailAsync(string email)
+    {
+        return await _selvoxDbContext.Users.SingleOrDefaultAsync(e => e.Email == email);
+    }
+
     public async Task<bool> DeleteUserAsync(int id)
     {
         var user = await _selvoxDbContext.Users.FindAsync(id);

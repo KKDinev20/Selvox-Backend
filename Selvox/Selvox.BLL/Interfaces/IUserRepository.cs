@@ -8,5 +8,7 @@ public interface IUserRepository
     Task<IEnumerable<User>> GetAllUsersAsync();
     Task<User> AddUserAsync(User user);
     Task<User> UpdateUserAsync(User user);
+
+    Task<User> GetUsersByEmailAsync(string email);
     Task<bool> DeleteUserAsync(int id); //delete visually, but not from the database
 }

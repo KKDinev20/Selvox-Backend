@@ -8,5 +8,9 @@ public interface IUserService
     Task<IEnumerable<User>> GetAllUsersAsync();
     Task<User> AddUserAsync(User user);
     Task<User> UpdateUserAsync(User user);
+
+    Task<User> AuthenticateUserAsync(string email, string password);
+    Task<User> RegisterUserAsync(User user, string password);
+    
     Task<bool> DeleteUserAsync(int id); 
 }
