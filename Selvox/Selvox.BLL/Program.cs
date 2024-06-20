@@ -20,6 +20,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IPersonalityAssessmentRepository, PersonalityAssessmentRepository>();
 
         var app = builder.Build();
 
