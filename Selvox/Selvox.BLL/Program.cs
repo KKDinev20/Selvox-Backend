@@ -12,6 +12,16 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocalhost",
+                builder => builder
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+        });
+
 
         builder.Services.AddControllers();
         builder.Services.AddDbContext<SelvoxDbContext>(options =>
@@ -20,6 +30,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IPersonalityAssessmentRepository, PersonalityAssessmentRepository>();
 
         var app = builder.Build();
@@ -35,7 +46,7 @@ public class Program
 
         app.UseAuthorization();
 
-
+        app.UseCors("AllowLocalhost");
         app.MapControllers();
 
         app.Run();
