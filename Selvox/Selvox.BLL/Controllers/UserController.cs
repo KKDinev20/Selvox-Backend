@@ -43,10 +43,23 @@ namespace Selvox.BLL.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDTO userUpdateDTO)
         {
-            if (id != user.UserId) return BadRequest();
-            var updatedUser = await _userService.UpdateUserAsync(user);
+            var existingUser = await _userService.GetUserByIdAsync(id);
+            if (existingUser == null)
+                return NotFound();
+
+            existingUser.FirstName = userUpdateDTO.FirstName;
+            existingUser.LastName = userUpdateDTO.LastName;
+            existingUser.DateOfBirth = userUpdateDTO.DateOfBirth;
+            existingUser.Gender = userUpdateDTO.Gender;
+
+            if (!string.IsNullOrEmpty(userUpdateDTO.PasswordHash))
+            {
+                existingUser.PasswordHash = userUpdateDTO.PasswordHash;
+            }
+
+            var updatedUser = await _userService.UpdateUserAsync(existingUser);
             return NoContent();
         }
 

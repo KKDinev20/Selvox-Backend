@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User> UpdateUserAsync(User user)
     {
-        _selvoxDbContext.Entry(user).State = EntityState.Modified;
+        _selvoxDbContext.Users.Update(user);
         await _selvoxDbContext.SaveChangesAsync();
         return user;
     }
