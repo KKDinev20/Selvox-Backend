@@ -55,14 +55,15 @@ public class UserService : IUserService
             throw new Exception("User with this email already exists.");
         }
 
-        user.PasswordHash = HashPassword(password);
+        user.PasswordHash = password;
         user.CreatedAt = DateTimeOffset.UtcNow;
         user.UpdatedAt = DateTimeOffset.UtcNow;
 
         return await _userRepository.AddUserAsync(user);
     }
 
-    private string HashPassword(string password)
+    //Not needed for now
+    /*private string HashPassword(string password)
     {
         byte[] salt = new byte[128 / 8];
         using (var rng = RandomNumberGenerator.Create())
@@ -78,7 +79,7 @@ public class UserService : IUserService
             numBytesRequested: 256 / 8));
 
         return hashed;
-    }
+    }*/
 
     public async Task<bool> DeleteUserAsync(int id)
     {
