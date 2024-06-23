@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Selvox.BLL.DTOs;
@@ -121,5 +122,16 @@ namespace Selvox.BLL.Controllers
             if (!deletedUser) return NotFound();
             return NoContent();
         }
+
+        [HttpGet("profile/{id}")]
+        public async Task<IActionResult> GetProfile(int id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+
+            return Ok(user);
+        }
+        
+        
     }
 }

@@ -1,76 +1,101 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Selvox.BLL.Interfaces;
 using Selvox.DAL.Models;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Selvox.BLL.DTOs;
+using Selvox.DAL.Context;
 
-namespace Selvox.Web.Controllers
+namespace Selvox.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonalityAssessmentsController : ControllerBase
+    public class PersonalityAssessmentController : ControllerBase
     {
-        private readonly IPersonalityAssessmentRepository _service;
+        private readonly SelvoxDbContext _context;
 
-        public PersonalityAssessmentsController(IPersonalityAssessmentRepository service)
+        public PersonalityAssessmentController(SelvoxDbContext context)
         {
-            _service = service;
+            _context = context;
         }
-        
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PersonalityAssessment>>> GetAllAssessmentsAsync()
+
+        [HttpGet("questions")]
+        public async Task<ActionResult<IEnumerable<PersonalityQuestion>>> GetQuestions()
         {
-            var assessments = await _service.GetAllAssessmentsAsync();
-            if (assessments == null)
+            var questions = await _context.PersonalityQuestions.ToListAsync();
+            return Ok(questions);
+        }
+
+        [HttpPost("submit")]
+        public async Task<IActionResult> SubmitAnswers([FromBody] List<PersonalityAnswerDTO> answers)
+        {
+            if (answers == null || !answers.Any())
             {
-                return NotFound();
+                return BadRequest(new { message = "Invalid answers" });
             }
 
-            return Ok(assessments);
+            var userId = answers.First().UserId;
+
+            var personalityAssessment = new PersonalityAssessment
+            {
+                UserId = userId,
+                AssessmentDate = DateTimeOffset.UtcNow,
+                Results = JsonSerializer.Serialize(answers),
+                Summary = string.Empty,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow
+            };
+
+            _context.PersonalityAssessments.Add(personalityAssessment);
+            await _context.SaveChangesAsync();
+
+            var jobFieldScores = new Dictionary<int, int>();
+
+            foreach (var answer in answers)
+            {
+                var questionMappings = await _context.QuestionJobFieldMappings
+                    .Where(q => q.QuestionId == answer.QuestionId)
+                    .ToListAsync();
+
+                foreach (var mapping in questionMappings)
+                {
+                    if (!jobFieldScores.ContainsKey(mapping.JobFieldId))
+                    {
+                        jobFieldScores[mapping.JobFieldId] = 0;
+                    }
+                    jobFieldScores[mapping.JobFieldId] += answer.Score;
+                }
+            }
+
+            var results = jobFieldScores.Select(kvp => new PersonalityAssessmentResultDTO
+            {
+                JobFieldId = kvp.Key,
+                MatchScore = kvp.Value / (answers.Count * 5.0m) * 100
+            }).ToList();
+
+            personalityAssessment.Summary = JsonSerializer.Serialize(results);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Answers submitted successfully", results });
         }
-        
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PersonalityAssessment>> GetAssessmentByIdAsync(int id)
+
+        [HttpGet("results/{userId}")]
+        public async Task<ActionResult<IEnumerable<PersonalityAssessmentResultDTO>>> GetResults(int userId)
         {
-            var assessment = await _service.GetAssessmentByIdAsync(id);
+            var assessment = await _context.PersonalityAssessments
+                .Where(pa => pa.UserId == userId)
+                .OrderByDescending(pa => pa.AssessmentDate)
+                .FirstOrDefaultAsync();
 
             if (assessment == null)
             {
                 return NotFound();
             }
 
-            return assessment;
-        }
-        
-        [HttpPost]
-        public async Task<ActionResult<PersonalityAssessment>> PostAssessmentAsync([FromBody] PersonalityAssessment assessment)
-        {
-            var result = await _service.AddAssessmentAsync(assessment);
-            return CreatedAtAction(nameof(GetAssessmentByIdAsync), new { id = result.AssessmentId }, result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAssessmentAsync(int id, [FromBody] PersonalityAssessment assessment)
-        {
-            if (id!= assessment.AssessmentId)
-            {
-                return BadRequest();
-            }
-
-            var result = await _service.UpdateAssessmentAsync(assessment);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAssessmentAsync(int id)
-        {
-            var success = await _service.DeleteAssessmentAsync(id);
-            if (!success)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            var results = JsonSerializer.Deserialize<List<PersonalityAssessmentResultDTO>>(assessment.Summary);
+            return Ok(results);
         }
     }
 }
