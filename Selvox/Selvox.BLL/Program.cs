@@ -34,6 +34,7 @@ public class Program
         builder.Services.AddScoped<IPersonalityAssessmentRepository, PersonalityAssessmentRepository>();
 
         var app = builder.Build();
+        app.UseMiddleware<RoleBasedAuthorizationMiddleware>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

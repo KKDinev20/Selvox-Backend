@@ -30,6 +30,12 @@ public partial class SelvoxDbContext : DbContext
 
     public virtual DbSet<PersonalityAssessment> PersonalityAssessments { get; set; }
 
+    public virtual DbSet<PersonalityQuestion> PersonalityQuestions { get; set; }
+    public virtual DbSet<PersonalityTestQuestion> PersonalityTestQuestions { get; set; }
+    public virtual DbSet<PersonalityTestAnswer> PersonalityTestAnswers { get; set; }
+
+    public virtual DbSet<QuestionJobFieldMapping> QuestionJobFieldMappings { get; set; }
+
     public virtual DbSet<Skill> Skills { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -109,6 +115,20 @@ public partial class SelvoxDbContext : DbContext
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetimeoffset())");
 
             entity.HasOne(d => d.User).WithMany(p => p.PersonalityAssessments).HasConstraintName("FK__Personali__UserI__4F7CD00D");
+        });
+
+        modelBuilder.Entity<PersonalityQuestion>(entity =>
+        {
+            entity.HasKey(e => e.QuestionId).HasName("PK__Personal__0DC06FAC021B80BC");
+        });
+
+        modelBuilder.Entity<QuestionJobFieldMapping>(entity =>
+        {
+            entity.HasKey(e => e.MappingId).HasName("PK__Question__8B57819D8122EF1C");
+
+            entity.HasOne(d => d.JobField).WithMany(p => p.QuestionJobFieldMappings).HasConstraintName("FK__QuestionJ__JobFi__18EBB532");
+
+            entity.HasOne(d => d.Question).WithMany(p => p.QuestionJobFieldMappings).HasConstraintName("FK__QuestionJ__Quest__17F790F9");
         });
 
         modelBuilder.Entity<Skill>(entity =>

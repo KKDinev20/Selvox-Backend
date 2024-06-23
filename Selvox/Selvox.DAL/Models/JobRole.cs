@@ -33,4 +33,7 @@ public partial class JobRole
 
     [InverseProperty("JobRole")]
     public virtual ICollection<JobListing> JobListings { get; } = new List<JobListing>();
+
+    [InverseProperty("JobField")]
+    public virtual ICollection<QuestionJobFieldMapping> QuestionJobFieldMappings { get; } = new List<QuestionJobFieldMapping>();
 }
