@@ -9,7 +9,7 @@ using Selvox.DAL.Models;
 namespace Selvox.BLL.Controllers
 {
     [Route("api/[controller]")]
-    [EnableCors("AllowLocalhost")]
+    [EnableCors("CorsPolicy")]
     [ApiController]
     public class UserController : ControllerBase
     {
