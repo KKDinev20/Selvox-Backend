@@ -14,12 +14,11 @@ public class Program
         // Add services to the container.
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowLocalhost",
-                builder => builder
-                    .WithOrigins("http://localhost:3000")
+            options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .AllowCredentials());
+            );
         });
 
 
@@ -31,6 +30,7 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IJobOfferService, JobOfferService>();
         builder.Services.AddScoped<IPersonalityAssessmentRepository, PersonalityAssessmentRepository>();
 
         var app = builder.Build();
@@ -47,7 +47,7 @@ public class Program
 
         app.UseAuthorization();
 
-        app.UseCors("AllowLocalhost");
+        app.UseCors("CorsPolicy");
         app.MapControllers();
 
         app.Run();
