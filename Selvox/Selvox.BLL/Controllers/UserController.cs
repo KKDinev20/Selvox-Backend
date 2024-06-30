@@ -9,7 +9,7 @@ using Selvox.DAL.Models;
 namespace Selvox.BLL.Controllers
 {
     [Route("api/[controller]")]
-    [EnableCors("CorsPolicy")]
+    [EnableCors()]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -64,7 +64,7 @@ namespace Selvox.BLL.Controllers
             return NoContent();
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDTO registrationDto)
         {
             try
@@ -94,23 +94,38 @@ namespace Selvox.BLL.Controllers
             }
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var user = await _userService.AuthenticateUserAsync(userLoginDto.Email, userLoginDto.PasswordHash);
             if (user == null)
             {
                 return Unauthorized(new { message = "Invalid email or password" });
             }
 
-            var token = "dummy-jwt-token";
+            // Set session variables
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+            HttpContext.Session.SetString("UserRole", user.Role);
 
-            return Ok(new { token, userId = user.UserId, role = user.Role });
+            return Ok(new { message = "Login successful", userId = user.UserId, role = user.Role });
         }
+
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { message = "Logout successful" });
+        }
+
+
 
         private bool IsValidRole(string role)
         {
-            // Define allowed roles
             var allowedRoles = new[] { "jobseeker", "employer", "admin" };
             return allowedRoles.Contains(role.ToLowerInvariant()); 
         }

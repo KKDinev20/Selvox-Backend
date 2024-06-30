@@ -12,43 +12,58 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddCors(options =>
+        builder.Services.AddControllers();
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddSession(options =>
         {
-            options.AddPolicy("CorsPolicy",
-                builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-            );
+            options.IdleTimeout = TimeSpan.FromMinutes(30);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
         });
 
+        // Configure CORS policy
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocalhost",
+                policyBuilder => policyBuilder.WithOrigins("http://localhost:3000")
+                                              .AllowAnyHeader()
+                                              .AllowAnyMethod()
+                                              .AllowCredentials());
+        });
 
-        builder.Services.AddControllers();
         builder.Services.AddDbContext<SelvoxDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddScoped<IJobOfferService, JobOfferService>();
+        builder.Services.AddScoped<IJobListingService, JobListingService>();
         builder.Services.AddScoped<IPersonalityAssessmentRepository, PersonalityAssessmentRepository>();
 
         var app = builder.Build();
-        app.UseMiddleware<RoleBasedAuthorizationMiddleware>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseDeveloperExceptionPage();
         }
 
         app.UseHttpsRedirection();
-
+        app.UseRouting();
+        app.UseCors("AllowLocalhost");
+        app.UseSession();
         app.UseAuthorization();
+        
+        // Use custom role-based middleware
+        app.UseRoleMiddleware();
 
-        app.UseCors("CorsPolicy");
-        app.MapControllers();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
 
         app.Run();
     }

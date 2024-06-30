@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Selvox.BLL.DTOs;
+using Selvox.BLL.Interfaces;
 using Selvox.DAL.Context;
 using Selvox.DAL.Models;
 
@@ -9,38 +11,30 @@ namespace Selvox.BLL.Controllers;
 [ApiController]
 public class JobListingController : ControllerBase
 {
-    private readonly SelvoxDbContext _selvoxDbContext;
+    private readonly IJobListingService _jobListingService;
 
-    public JobListingController(SelvoxDbContext selvoxDbContext)
+    public JobListingController(IJobListingService jobListingService)
     {
-        _selvoxDbContext = selvoxDbContext;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<JobListing>>> GetJobListings()
-    {
-        return await _selvoxDbContext.JobListings
-            .Include(jl => jl.Employer)
-            .Include(jl => jl.JobRole)
-            .ToListAsync();
+        _jobListingService = jobListingService;
     }
 
     [HttpPost]
-    public async Task<ActionResult<JobListing>> PostJobListings(JobListing jobListing)
+    [Route("PostJobListing")]
+    public async Task<IActionResult> PostJobListing([FromBody] JobListingDTO jobListingDto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        
-        jobListing.PostedDate = DateTimeOffset.Now;
-        jobListing.CreatedAt = DateTimeOffset.Now;
-        jobListing.UpdatedAt = DateTimeOffset.Now;
 
-        _selvoxDbContext.JobListings.Add(jobListing);
-        await _selvoxDbContext.SaveChangesAsync();
-
-        return CreatedAtAction("GetJobListing", new { id = jobListing.JobListingId, jobListing });
+        try
+        {
+            await _jobListingService.AddJobListingAsync(jobListingDto);
+            return Ok(new { Message = "Job listing posted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = ex.Message });
+        }
     }
-
 }

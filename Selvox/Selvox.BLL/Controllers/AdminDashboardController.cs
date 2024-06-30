@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Selvox.DAL.Context;
 
+namespace Selvox.BLL.Controllers;
+
 [ApiController]
-[EnableCors("CorsPolicy")]
+[EnableCors()]
 [Route("api/admin/dashboard-data")]
 public class AdminDashboardController : ControllerBase
 {
