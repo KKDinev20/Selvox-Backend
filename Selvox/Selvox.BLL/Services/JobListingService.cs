@@ -47,7 +47,59 @@ public class JobListingService : IJobListingService
         _selvoxDbContext.JobListings.Add(jobListing);
         await _selvoxDbContext.SaveChangesAsync();
     }
-    
+
+    public Task<IEnumerable<JobListing>> GetAllJobListingsAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<JobListing> GetJobListingByIDAsync(int id)
+    {
+        return await _selvoxDbContext.JobListings.FindAsync(id);
+    }
+
+    public async Task DeleteJobListingAsync(int id)
+    {
+        var jobListing = await 
+            _selvoxDbContext.JobListings.FindAsync(id);
+        if (jobListing != null)
+        {
+            _selvoxDbContext.JobListings.Remove(jobListing);
+            await _selvoxDbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task UpdateJobListingAsync(int id, JobListingDTO jobListingDto)
+    {
+        var jobListing = await _selvoxDbContext.JobListings.FindAsync(id);
+        if (jobListing != null)
+        {
+            var employer = await _selvoxDbContext.Employers.FindAsync(jobListingDto.EmployerId);
+            var jobRole = await _selvoxDbContext.JobRoles.FindAsync(jobListingDto.JobRoleId);
+
+            if (employer == null)
+            {
+                throw new Exception("Employer not found.");
+            }
+
+            if (jobRole == null)
+            {
+                throw new Exception("Job role not found.");
+            }
+
+            jobListing.EmployerId = employer.EmployerId;
+            jobListing.JobRoleId = jobRole.JobRoleId;
+            jobListing.JobTitle = jobListingDto.JobTitle;
+            jobListing.JobDescription = jobListingDto.JobDescription;
+            jobListing.Location = jobListingDto.Location;
+            jobListing.SalaryRange = jobListingDto.SalaryRange;
+            jobListing.UpdatedAt = DateTimeOffset.UtcNow;
+
+            await _selvoxDbContext.SaveChangesAsync();
+        }
+
+    }
+
     public async Task<IEnumerable<JobListing>> GetAllJobListingsAsync()
     {
         return await _selvoxDbContext.JobListings.ToListAsync();

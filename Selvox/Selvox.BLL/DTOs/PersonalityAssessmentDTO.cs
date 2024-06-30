@@ -2,5 +2,7 @@
 
 public class PersonalityAssessmentDTO
 {
-    public int[] Answers { get; set; }
+    public int UserId { get; set; }
+    public Dictionary<string, int> Results { get; set; }
+    
 }

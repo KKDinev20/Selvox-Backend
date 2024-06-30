@@ -11,4 +11,6 @@ public interface IUserRepository
 
     Task<User> GetUsersByEmailAsync(string email);
     Task<bool> DeleteUserAsync(int id); //delete visually, but not from the database
+    Task<Employer> GetEmployerByIdAsync(int employerId);
+
 }

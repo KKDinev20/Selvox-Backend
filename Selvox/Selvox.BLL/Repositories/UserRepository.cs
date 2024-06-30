@@ -53,4 +53,9 @@ public class UserRepository : IUserRepository
         await _selvoxDbContext.SaveChangesAsync();
         return true;
     }
+    
+    public async Task<Employer> GetEmployerByIdAsync(int employerId)
+    {
+        return await _selvoxDbContext.Employers.FindAsync(employerId);
+    }
 }

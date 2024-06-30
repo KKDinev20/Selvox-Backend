@@ -13,4 +13,6 @@ public interface IUserService
     Task<User> RegisterUserAsync(User user, string password);
     
     Task<bool> DeleteUserAsync(int id); 
+    Task<Employer> GetEmployerByIdAsync(int employerId);
+
 }

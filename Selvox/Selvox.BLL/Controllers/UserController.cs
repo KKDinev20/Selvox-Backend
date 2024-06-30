@@ -94,13 +94,16 @@ namespace Selvox.BLL.Controllers
             }
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            // Logging to debug
+            Console.WriteLine($"Login attempt: Email={userLoginDto.Email}, PasswordHash={userLoginDto.PasswordHash}");
 
             var user = await _userService.AuthenticateUserAsync(userLoginDto.Email, userLoginDto.PasswordHash);
             if (user == null)
@@ -115,7 +118,7 @@ namespace Selvox.BLL.Controllers
             return Ok(new { message = "Login successful", userId = user.UserId, role = user.Role });
         }
 
-        [HttpPost("Logout")]
+        [HttpPost("logout")]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

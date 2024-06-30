@@ -85,4 +85,9 @@ public class UserService : IUserService
     {
         return await _userRepository.DeleteUserAsync(id);
     }
+    
+    public async Task<Employer> GetEmployerByIdAsync(int employerId)
+    {
+        return await _userRepository.GetEmployerByIdAsync(employerId);
+    }
 }

@@ -1,9 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Selvox.BLL.Interfaces;
 using Selvox.BLL.Repositories;
 using Selvox.DAL.Context;
-
-namespace Selvox.BLL;
 
 public class Program
 {
@@ -11,7 +10,6 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddSession(options =>
@@ -21,16 +19,29 @@ public class Program
             options.Cookie.IsEssential = true;
         });
 
-        // Configure CORS policy
+        // Add services to the container.
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowLocalhost",
-                policyBuilder => policyBuilder.WithOrigins("http://localhost:3000")
-                                              .AllowAnyHeader()
-                                              .AllowAnyMethod()
-                                              .AllowCredentials());
+            options.AddDefaultPolicy(
+                policyBuilder => policyBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+            );
         });
+        
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/api/User/Login";
+                options.LogoutPath = "/api/User/Logout";
+            });
 
+        
+        builder.Services.AddAuthorization();
+
+
+        builder.Services.AddControllers();
         builder.Services.AddDbContext<SelvoxDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -52,13 +63,12 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseRouting();
-        app.UseCors("AllowLocalhost");
+        app.UseCors();
         app.UseSession();
         app.UseAuthorization();
-        
-        // Use custom role-based middleware
-        app.UseRoleMiddleware();
 
         app.UseEndpoints(endpoints =>
         {
