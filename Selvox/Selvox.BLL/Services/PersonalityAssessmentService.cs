@@ -76,7 +76,6 @@ public class PersonalityAssessmentService : IPersonalityAssessmentService
     {
         // Implement the logic to determine recommended fields based on assessment results.
         var recommendedFields = new List<string>();
-        // Add logic here...
         return recommendedFields;
     }
 
