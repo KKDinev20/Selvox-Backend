@@ -18,7 +18,7 @@
 
 ## 🚀 Project Information
 
-## TBA 🚧
+- Selvox is an application designed to match job seekers with potential employers based on their personality traits and job preferences. The project uses modern web technologies for both frontend and backend to ensure a smooth and responsive user experience.
 
 ## 💻 Languages
 
@@ -34,14 +34,13 @@
       <a><img width="40" height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/HTML5_Badge.svg/768px-HTML5_Badge.svg.png?20110131171049"/></a>
       <a><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/CSS3_logo.svg/768px-CSS3_logo.svg.png?20210705212817" width="40" height="40"/> </a>
        <a><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/900px-JavaScript-logo.png" width="40" height="40"/> </a>
-    <a><img width="40" height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/512px-Vue.js_Logo_2.svg.png"/></a>
-    <a><img width="40" height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Vitejs-logo.svg/410px-Vitejs-logo.svg.png?20220412224743"/></a>
+    <a><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Nextjs-logo.svg/591px-Nextjs-logo.svg.png?20230404233503"/></a>
+    <a><img height="40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/640px-Tailwind_CSS_Logo.svg.png"/></a>
   </p>
 - ### 🛢️ Database
   <p align="left"> 
       <a><img width="80" src="https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png?20210130181641"/></a>
   </p>
-
 ## 🛠️ Tools
   <p align="left"> 
     <a><img src="https://img.icons8.com/color/51/null/visual-studio-code-2019.png"/></a>
@@ -55,6 +54,25 @@
     <a><img src="https://img.icons8.com/color/48/000000/git.png" /></a>
     <a><img width="55px" src="https://img.icons8.com/material-outlined/256/github.png"/></a>
   </p>
+
+# 🌟 Features
+
+## 📝 Personality Test
+- A comprehensive personality test to assess job seekers' traits and match them with suitable job fields.
+- Real-time results and analysis to help users understand their strengths and preferences.
+
+## 👥 User Management
+- User authentication and authorization to control access and ensure data security.
+- Differentiate user roles, such as job seekers, employers, and administrators, for tailored access to features.
+
+## 💼 Job Listings
+- Employers can post job listings with detailed descriptions, requirements, and application deadlines.
+- Job seekers can search and apply for jobs, view job details, and track application status.
+
+## 📊 Analytics Dashboard
+- Detailed analytics and reporting for employers to track job post performance and application statistics.
+- Insights into job market trends and candidate preferences.
+
 
 ## ⚙️ Installation
 
@@ -76,7 +94,7 @@ npm install
 npm run dev
 ```
 
-Or to run the back-end press F5 to start Selvox.BLL
+Or to run the back-end press F5 to start Selvox.BLL Swagger UI
 
 ## 🌐 Access Online
 
